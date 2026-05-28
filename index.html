@@ -78,6 +78,15 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
 .dres{border-radius:8px;padding:10px 12px;margin-top:10px;font-size:13px;line-height:1.7}
 .dref{background:#EAF3DE;border:1px solid #B5D99A;border-radius:10px;padding:14px;margin-top:12px;font-size:13px;line-height:1.8;color:#3B6D11}
 .dreft{font-size:14px;font-weight:700;margin:0 0 8px}
+@media print{
+  body{background:#fff;padding:8px}
+  .rapp{max-width:100%}
+  .rbox{break-inside:avoid;box-shadow:none}
+  .rtw{overflow:visible}
+  .rbtn-print{display:none!important}
+}
+.rbtn-print{cursor:pointer;display:block;width:100%;padding:14px;background:#0C447C;color:#fff;font-size:15px;font-weight:700;border:none;border-radius:10px;margin-top:16px;text-align:center;letter-spacing:.03em}
+.rbtn-print:hover{background:#0A3A6A}
 </style>
 </head>
 <body>
@@ -293,5 +302,8 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
   window.addEventListener('DOMContentLoaded',init);
 })();
 </script>
+<div style="max-width:600px;margin:0 auto;padding-bottom:24px">
+<button class="rbtn-print" onclick="window.print()">📄 下載我的退休規劃（儲存為 PDF）</button>
+</div>
 </body>
 </html>
