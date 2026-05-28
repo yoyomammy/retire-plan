@@ -97,8 +97,8 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
 <div class="rbox">
   <div class="rhead"><div class="rnum" style="background:#F0F0F0;color:#555;font-size:16px">?</div><span class="rtitle">你現在的狀態是？</span></div>
   <div style="display:flex;flex-direction:column;gap:8px">
-    <div class="ropt" id="oa"><div class="rcirc" id="ca"></div><div class="rotl"><span class="rott" id="ta">💪 我現在想衝資產</span><span class="rotd" id="da">每個月存錢投資，慢慢累積退休金</span></div></div>
-    <div class="ropt" id="od"><div class="rcirc" id="cd"></div><div class="rotl"><span class="rott" id="td">💰 我現在已經有一筆錢</span><span class="rotd" id="dd">想知道能不能靠股息退休</span></div></div>
+    <div class="ropt" id="oa"><div class="rcirc" id="ca"></div><div class="rotl"><span class="rott" id="ta">💪 我現在要每個月存錢投資</span><span class="rotd" id="da">每個月固定投資，累積退休金</span></div></div>
+    <div class="ropt" id="od"><div class="rcirc" id="cd"></div><div class="rotl"><span class="rott" id="td">💰 我現在要領股息退休</span><span class="rotd" id="dd">我已經有一筆錢，想靠股息生活</span></div></div>
   </div>
 </div>
 
@@ -119,10 +119,10 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
   </div>
   <div class="rbox">
     <div class="rhead"><div class="rnum">2</div><span class="rtitle">投資條件</span></div>
-    <div class="rf"><div class="rfrow"><span class="rfl">現有本金</span><input class="rfi" id="pri" type="number" min="0" placeholder="0"><span class="rfuw">萬台幣</span></div><div class="rph">⚠️ 單位是「萬」——有 100 萬請填 100</div></div>
-    <div class="rf"><div class="rfrow"><span class="rfl">現在每月投入</span><input class="rfi" id="mon" type="number" min="0" step="1000" placeholder="元"><span class="rfu">元台幣</span></div></div>
-    <div class="rf"><div class="rfrow"><span class="rfl">加薪後每月多存</span><input class="rfi" id="inc" type="number" min="0" step="500" placeholder="0"><span class="rfu">元台幣</span></div><div class="rfh" id="inch">每年加薪後多存多少，沒有加薪填 0。</div></div>
-    <div class="rf"><div class="rfrow"><span class="rfl">每月投入上限</span><input class="rfi" id="mxm" type="number" min="0" step="1000" placeholder="元"><span class="rfu">元台幣</span></div><div class="rfh" id="mxh">加薪後最多每月存多少，超過的留給生活用。</div><div class="rwn" id="wrn"></div></div>
+    <div class="rf"><div class="rfrow"><span class="rfl">我目前有多少本金？</span><input class="rfi" id="pri" type="number" min="0" placeholder="0"><span class="rfuw">萬台幣</span></div><div class="rph">⚠️ 單位是「萬」——有 100 萬請填 100</div></div>
+    <div class="rf"><div class="rfrow"><span class="rfl">我每個月投多少？</span><input class="rfi" id="mon" type="number" min="0" step="1000" placeholder="元"><span class="rfu">元台幣</span></div></div>
+    <div class="rf"><div class="rfrow"><span class="rfl">加薪後每個月多存多少？</span><input class="rfi" id="inc" type="number" min="0" step="500" placeholder="0"><span class="rfu">元台幣</span></div><div class="rfh" id="inch">每年加薪後多存多少，沒有加薪填 0。</div></div>
+    <div class="rf"><div class="rfrow"><span class="rfl">每個月最多投資多少錢？</span><input class="rfi" id="mxm" type="number" min="0" step="1000" placeholder="元"><span class="rfu">元台幣</span></div><div class="rfh" id="mxh">加薪後最多每月存多少，超過的留給生活用。</div><div class="rwn" id="wrn"></div></div>
     <div class="rprev" id="prv"></div>
     <div class="rf" style="margin-top:12px">
       <div class="rfrow"><span class="rfl">預期年化報酬</span><input class="rfi" id="gr" type="number" min="1" max="30" step="0.5" placeholder="%"><span class="rfu">%</span></div>
