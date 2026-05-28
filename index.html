@@ -273,7 +273,7 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
       tr.innerHTML='<td><strong>'+a+' 歲</strong></td><td>'+badge+'</td><td>總資產 '+fmt(asset)+'<br><span style="font-size:12px;color:#555">每月可花 '+fmtPP(pp,fam)+'</span>'+tag+'</td>';
       tb.appendChild(tr);
     });
-    g('tn').innerHTML='💡 表格裡的數字，是以<strong>現在的錢來換算</strong>的——退休後你實際領到的金額會比較高，但能買到的東西跟現在一樣多。（已考量每年 4% 通膨）';
+    g('tn').innerHTML='💡 這裡的數字已考量每年 4% 通膨，用現在的物價換算，方便你對照現在的生活費。';
     var sc=g('sc'),enc=g('enc');
     if(!ew){sc.style.display='none';enc.style.display='none';return;}
     sc.style.display='';enc.style.display='';
