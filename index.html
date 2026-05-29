@@ -105,17 +105,18 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
 <div id="sa" style="display:none">
   <div class="rbox">
     <div class="rhead"><div class="rnum">1</div><span class="rtitle">基本條件</span></div>
-    <div class="rf"><div class="rfrow"><span class="rfl">現在年齡</span><input class="rfi" id="age" type="number" min="20" max="70" placeholder="歲"><span class="rfu">歲</span></div></div>
+    <div class="rf"><div class="rfrow"><span class="rfl">你今年幾歲？</span><input class="rfi" id="age" type="number" min="20" max="70" placeholder="歲"><span class="rfu">歲</span></div></div>
+    <div class="rf"><div class="rfrow"><span class="rfl">你想幾歲退休？</span><input class="rfi" id="ret" type="number" min="40" max="80" placeholder="歲"><span class="rfu">歲</span></div></div>
     <div class="rf">
       <div class="rfrow" style="align-items:flex-start">
-        <span class="rfl" style="padding-top:6px">家庭組合</span>
+        <span class="rfl" style="padding-top:6px">我需要準備幾份退休金？</span>
         <div class="ropts">
-          <div class="ropt" id="os1" data-f="1"><div class="rcirc" id="cs1"></div><div class="rotl"><span class="rott" id="ts1">👤 單身</span><span class="rotd" id="ds1">存一個人的退休金</span></div></div>
-          <div class="ropt ab" id="os2" data-f="2"><div class="rcirc cb" id="cs2"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4L4 7.5L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="rotl"><span class="rott bl" id="ts2">👫 夫妻兩人</span><span class="rotd bl" id="ds2">存兩個人的退休金</span></div></div>
+          <div class="ropt" id="os1" data-f="1"><div class="rcirc" id="cs1"></div><div class="rotl"><span class="rott" id="ts1">👤 我把自己照顧好就好</span></div></div>
+          <div class="ropt ab" id="os2" data-f="2"><div class="rcirc cb" id="cs2"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4L4 7.5L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="rotl"><span class="rott bl" id="ts2">👫 我有另一半，要準備兩份退休金</span></div></div>
         </div>
       </div>
     </div>
-    <div class="rf"><div class="rfrow"><span class="rfl">每人每月生活費</span><input class="rfi" id="exp" type="number" min="0.1" max="30" step="0.1" placeholder="萬"><span class="rfu">萬台幣</span></div><div class="rfh" id="exph">填退休後每月生活開銷，以現在的購買力計算。</div></div>
+    <div class="rf"><div class="rfrow"><span class="rfl">每人每月生活費是多少？</span><input class="rfi" id="exp" type="number" min="0.1" max="30" step="0.1" placeholder="萬"><span class="rfu">萬台幣</span></div><div class="rfh" id="exph">填退休後每月生活開銷，以現在的購買力計算。</div></div>
   </div>
   <div class="rbox">
     <div class="rhead"><div class="rnum">2</div><span class="rtitle">投資條件</span></div>
@@ -130,12 +131,9 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
       <div class="rfh">長期平均報酬，不代表每年固定達到。</div>
     </div>
   </div>
+
   <div class="rbox">
-    <div class="rhead"><div class="rnum">3</div><span class="rtitle">退休目標</span></div>
-    <div class="rf"><div class="rfrow"><span class="rfl">我想幾歲退休</span><input class="rfi" id="ret" type="number" min="40" max="80" placeholder="歲"><span class="rfu">歲</span></div></div>
-  </div>
-  <div class="rbox">
-    <div class="rhead"><div class="rnum">4</div><span class="rtitle">我的退休計畫</span></div>
+    <div class="rhead"><div class="rnum">3</div><span class="rtitle">我的退休計畫</span></div>
     <div class="rcard rcb">
       <p class="rct">📊 退休那一天</p>
       <div class="rcgrid">
@@ -290,15 +288,69 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
     else{var gap=tP-ppR;sc.className='rsc rsbad';sc.innerHTML='以目前的計畫，退休後'+gapStr(gap,fam)+'。<br><br>💡 可以調整的方向：<br>1. 增加每月投入，或提高初始本金<br>2. 延後退休年齡，讓資產多複利幾年<br>3. 降低退休後的生活費';}
   }
   function bindOpt(id,cb){var el=g(id);if(!el)return;el.addEventListener('click',cb);el.addEventListener('touchend',function(e){e.preventDefault();cb();});}
+
+  // 會不會繼續存錢
+  var willSave=true;
+  function setSave(yes){
+    willSave=yes;
+    var svgW2='<svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4L4 7.5L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var oy=g('osave-y'),on_=g('osave-n'),cy=g('csave-y'),cn=g('csave-n'),ss=g('save-section');
+    if(!oy||!on_||!cy||!cn||!ss)return;
+    if(yes){
+      oy.className='ropt ab';cy.className='rcirc cb';cy.innerHTML=svgW2;
+      on_.className='ropt';cn.className='rcirc';cn.innerHTML='';
+      ss.style.display='';
+    }else{
+      on_.className='ropt ab';cn.className='rcirc cb';cn.innerHTML=svgW2;
+      oy.className='ropt';cy.className='rcirc';cy.innerHTML='';
+      ss.style.display='none';
+      var mon=g('mon');if(mon)mon.value='';
+    }
+    calc();
+  }
+
+  // 會不會加薪
+  var willInc=false;
+  function setInc(yes){
+    willInc=yes;
+    var svgW2='<svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4L4 7.5L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var oy=g('oinc-y'),on_=g('oinc-n'),cy=g('cinc-y'),cn=g('cinc-n'),is_=g('inc-section'),msg=g('inc-msg');
+    if(!oy||!on_||!cy||!cn||!is_)return;
+    if(yes){
+      oy.className='ropt ab';cy.className='rcirc cb';cy.innerHTML=svgW2;
+      on_.className='ropt';cn.className='rcirc';cn.innerHTML='';
+      is_.style.display='';
+      if(msg){msg.style.display='block';msg.style.background='#EAF3DE';msg.style.color='#3B6D11';msg.textContent='恭喜你，你老闆真好 🎉';}
+    }else{
+      on_.className='ropt ab';cn.className='rcirc cb';cn.innerHTML=svgW2;
+      oy.className='ropt';cy.className='rcirc';cy.innerHTML='';
+      is_.style.display='none';
+      var inc=g('inc');if(inc)inc.value='';
+      var mxm=g('mxm');if(mxm)mxm.value='';
+      if(msg){msg.style.display='block';msg.style.background='#FFF5EE';msg.style.color='#C05000';msg.textContent='辛苦你了，要提升自己的能力增加本金 💪';}
+    }
+    calc();
+  }
+
   function bind(){
     ['age','exp','pri','mon','inc','mxm','gr','ret'].forEach(function(id){var el=g(id);if(!el)return;el.addEventListener('input',function(){if(id==='exp')updEH();if(id==='inc')updIH();if(['inc','mon','mxm'].indexOf(id)!==-1){updMH();chkW();}if(id==='gr')syncR();calc();});});
     ['dp','de'].forEach(function(id){var el=g(id);if(!el)return;el.addEventListener('input',calcDiv);});
     [6,8,12].forEach(function(r){var b=g('rb'+r);if(b)b.addEventListener('click',function(){setRate(r);});});
     bindOpt('os1',function(){setFam(1);});bindOpt('os2',function(){setFam(2);});
+    bindOpt('osave-y',function(){setSave(true);});bindOpt('osave-n',function(){setSave(false);});
+    bindOpt('oinc-y',function(){setInc(true);});bindOpt('oinc-n',function(){setInc(false);});
     bindOpt('ds1',function(){setDFam(1);});bindOpt('ds2',function(){setDFam(2);});
     bindOpt('oa',function(){setMode('a');});bindOpt('od',function(){setMode('d');});
   }
-  function init(){try{bind();setFam(2);setDFam(2);}catch(e){console.error(e);}}
+  function init(){
+    try{
+      bind();setFam(2);setDFam(2);
+      // 延遲執行確保衝資產區塊已顯示
+      setTimeout(function(){
+        if(g('osave-y'))setSave(true);
+      },50);
+    }catch(e){console.error(e);}
+  }
   window.addEventListener('DOMContentLoaded',init);
 })();
 </script>
