@@ -82,6 +82,9 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
 .renc-body{font-size:13px;color:#444;margin:0}
 .rbtn-print{cursor:pointer;display:block;width:100%;padding:14px;background:#0C447C;color:#fff;font-size:15px;font-weight:700;border:none;border-radius:10px;margin-top:16px;text-align:center}
 .rbtn-print:hover{background:#0A3A6A}
+.rbtn-submit{cursor:pointer;display:block;width:100%;padding:14px;background:#1A7A6A;color:#fff;font-size:15px;font-weight:700;border:none;border-radius:10px;margin-top:8px;text-align:center}
+.rbtn-submit:hover{background:#155F52}
+.rbtn-submit:disabled{background:#aaa;cursor:not-allowed}
 @media print{body{background:#fff;padding:8px}.rapp{max-width:100%}.rbox{box-shadow:none;break-inside:avoid}.rtw{overflow:visible}.rbtn-print{display:none!important}}
 
 .rcompare{background:#FFF8EE;border:1px solid #F5D9A0;border-radius:10px;padding:14px 16px;margin-top:12px;display:none}
@@ -98,6 +101,12 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
 <div class="rapp">
 <h1>我的退休財務計畫</h1>
 <p class="sub">填入你的條件，算出退休後每個月有多少錢可以用。</p>
+
+<div class="rbox">
+  <div class="rhead"><div class="rnum" style="background:#F0F0F0;color:#555">👋</div><span class="rtitle">先認識一下你！</span></div>
+  <div class="rf"><div class="rfrow"><span class="rfl">你的暱稱</span><input class="rfi" id="nickname" type="text" placeholder="例如：小美" style="width:160px;text-align:left"><span class="rfu"></span></div></div>
+  <div class="rf"><div class="rfrow"><span class="rfl">你的 Email</span><input class="rfi" id="email" type="email" placeholder="xxx@gmail.com" style="width:200px;text-align:left"><span class="rfu"></span></div></div>
+</div>
 
 <div class="rbox">
   <div class="rhead"><div class="rnum">1</div><span class="rtitle">基本條件</span></div>
@@ -226,7 +235,7 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
 </div>
 
 <div style="max-width:600px;margin:0 auto;padding-bottom:24px">
-  <button class="rbtn-print" onclick="window.print()">📄 下載我的退休規劃（儲存為 PDF）</button>
+  <button class="rbtn-print" onclick="submitOnDownload();window.print()">📄 下載我的退休計畫書</button>
 </div>
 </div>
 
@@ -404,6 +413,7 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
       prv.textContent='每月固定投入 '+fmt(mon)+(inc>0?'，每年多存 '+fmt(inc*12):'');
     }else prv.style.display='none';
 
+    scheduleAutoSend();
     if(!age||!ret||!gr||ret<=age){
       ['rra','rto','rsp','rst'].forEach(function(id){var el=g(id);if(el)el.innerHTML='—';});
       g('flx').style.display='none';g('tb').innerHTML='';g('sc').style.display='none';g('enc').style.display='none';return;
@@ -585,6 +595,60 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
   }
   window.addEventListener('DOMContentLoaded',init);
 })();
+
+// ===== 自動送出邏輯 =====
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbxe2_1njduRMAc5zhTkV7IjCfLTY1GfM5wWStxh_bydT89lk0ZKerVLG1keVyG2WUdK/exec';
+var autoSendTimer = null;
+var lastSentData = null;
+
+function collectData(){
+  function gv(id){var el=document.getElementById(id);return el?el.value:'';}
+  function gt(id){var el=document.getElementById(id);return el?el.textContent.trim():'';}
+  return {
+    timestamp: new Date().toLocaleString('zh-TW'),
+    nickname: gv('nickname').trim(),
+    email: gv('email').trim(),
+    age: gv('age'),
+    retireAge: gv('ret'),
+    family: document.getElementById('os2')&&document.getElementById('os2').classList.contains('ab')?'夫妻兩人':'單身',
+    expenseWan: gv('exp'),
+    principal: gv('pri'),
+    willSave: document.getElementById('osave-y')&&document.getElementById('osave-y').classList.contains('ab')?'會':'不會',
+    yearlyInvest: gv('yearly'),
+    willAccelerate: document.getElementById('oinc-y')&&document.getElementById('oinc-y').classList.contains('ab')?'願意':'不了',
+    yearlyInc: gv('yearly-inc'),
+    maxInvest: gv('mxm'),
+    investStyle: document.getElementById('rs12')&&document.getElementById('rs12').classList.contains('ra')?'積極12%':document.getElementById('rs8')&&document.getElementById('rs8').classList.contains('ra')?'穩健8%':'保守6%',
+    retireAsset: gt('rto'),
+    monthlySpend: gt('rsp'),
+    isEnough: gt('rst')
+  };
+}
+
+function sendData(data){
+  if(!data.email||!data.email.includes('@'))return;
+  if(!data.retireAsset||data.retireAsset==='—')return;
+  fetch(GAS_URL,{
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(data)
+  }).catch(function(){});
+}
+
+function scheduleAutoSend(){
+  if(autoSendTimer)clearTimeout(autoSendTimer);
+  autoSendTimer=setTimeout(function(){
+    var data=collectData();
+    sendData(data);
+  },30000);
+}
+
+// 手動送出（下載時觸發）
+function submitOnDownload(){
+  var data=collectData();
+  sendData(data);
+}
 </script>
 
 
