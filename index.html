@@ -710,14 +710,10 @@ function submitOnDownload(){
 
 // 必填驗證
 function validateForm(){
-  var nickname=document.getElementById('nickname').value.trim();
-  var email=document.getElementById('email').value.trim();
   var age=document.getElementById('age').value;
   var ret=document.getElementById('ret').value;
   var exp=document.getElementById('exp').value;
 
-  if(!nickname) return '請填寫你的暱稱';
-  if(!email||!email.includes('@')) return '請填寫正確的 Email';
   if(!age) return '請填寫你現在的年齡';
   if(!ret) return '請填寫你想幾歲退休';
   if(!exp) return '請填寫每月生活費';
