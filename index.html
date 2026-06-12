@@ -103,12 +103,6 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
 <p class="sub">填入你的條件，算出退休後每個月有多少錢可以用。</p>
 
 <div class="rbox">
-  <div class="rhead"><div class="rnum" style="background:#F0F0F0;color:#555">👋</div><span class="rtitle">先認識一下你！</span></div>
-  <div class="rf"><div class="rfrow"><span class="rfl">你的暱稱</span><input class="rfi" id="nickname" type="text" placeholder="例如：小美" style="width:160px;text-align:left"><span class="rfu"></span></div></div>
-  <div class="rf"><div class="rfrow"><span class="rfl">你的 Email</span><input class="rfi" id="email" type="email" placeholder="xxx@gmail.com" style="width:200px;text-align:left"><span class="rfu"></span></div></div>
-</div>
-
-<div class="rbox">
   <div class="rhead"><div class="rnum">1</div><span class="rtitle">基本條件</span></div>
   <div class="rf"><div class="rfrow"><span class="rfl">我今年幾歲？</span><input class="rfi" id="age" type="number" min="20" max="70" placeholder="歲"><span class="rfu">歲</span></div></div>
   <div class="rf"><div class="rfrow"><span class="rfl">我想幾歲退休？</span><input class="rfi" id="ret" type="number" min="40" max="80" placeholder="歲"><span class="rfu">歲</span></div></div>
@@ -235,8 +229,8 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
 </div>
 
 <div style="max-width:600px;margin:0 auto;padding-bottom:24px">
-  <button class="rbtn-print" onclick="submitOnDownload();window.print()">📄 下載我的退休計畫書</button>
-</div>
+  <button class="rbtn-print" onclick="handleDownload()">📄 下載我的退休計畫書</button>
+  <div id="download-msg" style="display:none;margin-top:10px;padding:10px 14px;border-radius:8px;font-size:13px;line-height:1.7"></div>
 </div>
 
 <script>
@@ -591,13 +585,19 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
   }
 
   function init(){
-    try{bind();setFam(2);setStyle(12);}catch(e){console.error(e);}
+    try{
+      bind();
+      setFam(2);
+      setStyle(12);
+      // 讀取 URL 參數（如果有的話）
+      loadFromURL();
+    }catch(e){console.error(e);}
   }
   window.addEventListener('DOMContentLoaded',init);
 })();
 
 // ===== 自動送出邏輯 =====
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbxe2_1njduRMAc5zhTkV7IjCfLTY1GfM5wWStxh_bydT89lk0ZKerVLG1keVyG2WUdK/exec';
+var GAS_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
 var autoSendTimer = null;
 var lastSentData = null;
 
@@ -625,6 +625,64 @@ function collectData(){
   };
 }
 
+// 產生專屬連結
+function generateLink(){
+  function gv(id){var el=document.getElementById(id);return el?el.value:'';}
+  var params=new URLSearchParams();
+  params.set('name', gv('nickname').trim());
+  params.set('email', gv('email').trim());
+  params.set('age', gv('age'));
+  params.set('ret', gv('ret'));
+  params.set('fam', document.getElementById('os2')&&document.getElementById('os2').classList.contains('ab')?'2':'1');
+  params.set('exp', gv('exp'));
+  params.set('pri', gv('pri'));
+  params.set('save', document.getElementById('osave-y')&&document.getElementById('osave-y').classList.contains('ab')?'1':'0');
+  params.set('yr', gv('yearly'));
+  params.set('inc', document.getElementById('oinc-y')&&document.getElementById('oinc-y').classList.contains('ab')?'1':'0');
+  params.set('yrinc', gv('yearly-inc'));
+  params.set('mxm', gv('mxm'));
+  params.set('style', document.getElementById('rs12')&&document.getElementById('rs12').classList.contains('ra')?'12':document.getElementById('rs8')&&document.getElementById('rs8').classList.contains('ra')?'8':'6');
+  return window.location.origin+window.location.pathname+'?'+params.toString();
+}
+
+// 載入時讀取 URL 參數自動填入
+function loadFromURL(){
+  var params=new URLSearchParams(window.location.search);
+  if(!params.has('age'))return; // 沒有參數就不執行
+
+  function sv(id,val){var el=document.getElementById(id);if(el&&val)el.value=val;}
+
+  sv('nickname', params.get('name'));
+  sv('email', params.get('email'));
+  sv('age', params.get('age'));
+  sv('ret', params.get('ret'));
+  sv('exp', params.get('exp'));
+  sv('pri', params.get('pri'));
+  sv('yearly', params.get('yr'));
+  sv('yearly-inc', params.get('yrinc'));
+  sv('mxm', params.get('mxm'));
+
+  // 家庭組合
+  var fam=params.get('fam');
+  if(fam==='1') setTimeout(function(){setFam(1);},100);
+  else setTimeout(function(){setFam(2);},100);
+
+  // 會不會存錢
+  var save=params.get('save');
+  setTimeout(function(){setSave(save==='1');},150);
+
+  // 願意加速
+  var inc=params.get('inc');
+  setTimeout(function(){setInc(inc==='1');},200);
+
+  // 投資派系
+  var style=parseInt(params.get('style')||'12');
+  setTimeout(function(){setStyle(style);},250);
+
+  // 觸發計算
+  setTimeout(function(){calc();},300);
+}
+
 function sendData(data){
   if(!data.email||!data.email.includes('@'))return;
   if(!data.retireAsset||data.retireAsset==='—')return;
@@ -648,6 +706,104 @@ function scheduleAutoSend(){
 function submitOnDownload(){
   var data=collectData();
   sendData(data);
+}
+
+// 必填驗證
+function validateForm(){
+  var nickname=document.getElementById('nickname').value.trim();
+  var email=document.getElementById('email').value.trim();
+  var age=document.getElementById('age').value;
+  var ret=document.getElementById('ret').value;
+  var exp=document.getElementById('exp').value;
+
+  if(!nickname) return '請填寫你的暱稱';
+  if(!email||!email.includes('@')) return '請填寫正確的 Email';
+  if(!age) return '請填寫你現在的年齡';
+  if(!ret) return '請填寫你想幾歲退休';
+  if(!exp) return '請填寫每月生活費';
+
+  var rto=document.getElementById('rto');
+  if(!rto||rto.textContent==='—') return '請填寫完所有條件，等計算結果出現後再下載';
+
+  return null;
+}
+
+// 領取計畫書
+function handleGetPlan(){
+  var msg=document.getElementById('get-plan-msg');
+  var nickname=document.getElementById('nickname').value.trim();
+  var email=document.getElementById('email').value.trim();
+
+  if(!nickname){
+    msg.style.display='block';
+    msg.style.background='#FCEBEB';
+    msg.style.color='#A32D2D';
+    msg.textContent='⚠️ 請填寫你的暱稱';
+    return;
+  }
+  if(!email||!email.includes('@')){
+    msg.style.display='block';
+    msg.style.background='#FCEBEB';
+    msg.style.color='#A32D2D';
+    msg.textContent='⚠️ 請填寫正確的 Email';
+    return;
+  }
+
+  // 檢查結果有沒有出來
+  var rto=document.getElementById('rto');
+  if(!rto||rto.textContent==='—'){
+    msg.style.display='block';
+    msg.style.background='#FCEBEB';
+    msg.style.color='#A32D2D';
+    msg.textContent='⚠️ 請先填完退休計畫，等計算結果出現後再領取';
+    return;
+  }
+
+  // 產生專屬連結
+  var link=generateLink();
+
+  // 送出資料
+  var data=collectData();
+  data.personalLink=link;
+  sendData(data);
+
+  // 顯示成功和連結
+  msg.style.display='block';
+  msg.style.background='#EAF3DE';
+  msg.style.color='#3B6D11';
+  msg.innerHTML='✓ 已收到！你的專屬退休計畫連結：<br><br>'+
+    '<a href="'+link+'" target="_blank" style="color:#0C447C;word-break:break-all;font-size:12px">'+link+'</a><br><br>'+
+    '📌 建議把這個連結收藏起來，隨時可以回來查看你的退休計畫。';
+}
+
+// 下載按鈕處理
+function handleDownload(){
+  var msg=document.getElementById('download-msg');
+  var err=validateForm();
+  if(err){
+    msg.style.display='block';
+    msg.style.background='#FCEBEB';
+    msg.style.color='#A32D2D';
+    msg.textContent='⚠️ '+err;
+    return;
+  }
+  msg.style.display='none';
+
+  // 送出資料
+  submitOnDownload();
+
+  // 偵測手機
+  var isMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if(isMobile){
+    msg.style.display='block';
+    msg.style.background='#EEF5FD';
+    msg.style.color='#0C447C';
+    msg.innerHTML='📱 <strong>手機下載步驟：</strong><br>'+
+      '<strong>iPhone</strong>：點瀏覽器底部分享圖示 → 選「列印」→ 用兩指放大預覽 → 儲存為 PDF → 可分享到 LINE 或 iCloud<br>'+
+      '<strong>Android</strong>：點右上角選單 → 選「列印」→ 儲存為 PDF → 可分享到 LINE 或 Google Drive';
+  }else{
+    window.print();
+  }
 }
 </script>
 
