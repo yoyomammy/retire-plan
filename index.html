@@ -189,10 +189,11 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
   <div class="rf">
     <p class="rq">我是屬於哪一種投資派系？</p>
     <div class="rstyle-btns">
-      <div class="rstyle-btn" id="rs6" onclick="setStyle(6)">🐢 保守派<span class="rstyle-sub">年化約 6%</span></div>
-      <div class="rstyle-btn" id="rs8" onclick="setStyle(8)">🙂 穩健派<span class="rstyle-sub">年化約 8%</span></div>
-      <div class="rstyle-btn ra" id="rs12" onclick="setStyle(12)">🚀 積極派<span class="rstyle-sub">年化約 12%</span></div>
+      <div class="rstyle-btn" id="rs6" onclick="setStyle(6)">🐢 保守派<span class="rstyle-sub">每年賺 6%</span><span class="rstyle-sub">買銀行股領股息</span></div>
+      <div class="rstyle-btn" id="rs8" onclick="setStyle(8)">🙂 穩健派<span class="rstyle-sub">每年賺 8%</span><span class="rstyle-sub">定期定額投大盤</span></div>
+      <div class="rstyle-btn ra" id="rs12" onclick="setStyle(12)">🚀 積極派<span class="rstyle-sub">每年賺 12%</span><span class="rstyle-sub">從大盤選出好公司</span></div>
     </div>
+    <div style="background:#FFF5EE;border:1px solid #F5C9A0;border-radius:6px;padding:8px 12px;margin-top:10px;font-size:11px;color:#854F0B;line-height:1.6">⚠️ 以上為複利 10 年以上的歷史平均狀況，非保證賺錢。</div>
   </div>
 </div>
 
@@ -244,7 +245,7 @@ h1{font-size:22px;font-weight:700;margin:0 0 4px;color:#111}
   function fmt(w){if(w>=100000)return(w/100000).toFixed(2)+' 百億';if(w>=10000)return(w/10000).toFixed(2)+' 億';if(w<=0)return'0 萬';return Math.round(w).toLocaleString()+' 萬';}
   function fmtN(n){return n>=10000?(n/10000).toFixed(1)+' 萬':n.toLocaleString()+' 元';}
   function fmtPP(pp,f){var per=Math.round(pp/f*10)/10,tot=Math.round(per*f*10)/10;return f===2?'每人 <strong>'+per.toFixed(1)+' 萬</strong>，合計 <strong>'+tot.toFixed(1)+' 萬</strong>':'<strong>'+per.toFixed(1)+' 萬</strong>';}
-  function gapStr(gap,f){return f===2?'每個月兩人共差 <strong>'+gap.toFixed(1)+' 萬</strong>':'每個月差 <strong>'+gap.toFixed(1)+' 萬</strong>';}
+  function gapStr(gap,f){return f===2?'不夠，每個月兩人共差 <strong>'+gap.toFixed(1)+' 萬</strong>':'不夠，每個月差 <strong>'+gap.toFixed(1)+' 萬</strong>';}
 
   function setOpt(onId,offId,onCId,offCId){
     var on_=g(onId),off_=g(offId),onC=g(onCId),offC=g(offCId);
